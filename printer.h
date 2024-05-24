@@ -6,6 +6,7 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <memory>
 #include "out.h"
 
 class Printer: public Observer
