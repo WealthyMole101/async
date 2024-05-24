@@ -18,10 +18,10 @@ jobs:
           cmake . -DPATCH_VERSION=${{ github.run_number }}
           cmake --build .
           cmake --build . --target package
-      - name: Project build async_user
+      - name: Project async_user/build 
         run: |
           cmake . -DPATCH_VERSION=${{ github.run_number }}
-          cmake --build ./asunc_user
+          cmake --build .
           cmake --build . --target package
       - name: Create Release
         id: create_release
