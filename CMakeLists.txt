@@ -31,11 +31,11 @@ install(
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/async
 )
-install(TARGETS async_user RUNTIME DESTINATION bin)
 
 add_executable(async_user main.cpp)
 target_link_libraries(async_user async)
 include_directories(/usr/include)
+install(TARGETS async_user RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
