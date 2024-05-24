@@ -14,10 +14,6 @@ set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pthread")
 #add_library(async async.h async.cpp main.cpp analyzer.h analyzer.cpp saver.h saver.cpp out.h printer.h printer.cpp)
 add_library(async SHARED async.h async.cpp analyzer.h analyzer.cpp saver.h saver.cpp out.h printer.h printer.cpp)
 
-add_executable(async_user main.cpp)
-target_link_libraries(async_user async)
-include_directories(/usr/include)
-
 if (MSVC)
     target_compile_options(async PRIVATE
         /W4
@@ -36,6 +32,10 @@ install(
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/async
 )
 install(TARGETS async_user RUNTIME DESTINATION bin)
+
+add_executable(async_user main.cpp)
+target_link_libraries(async_user async)
+include_directories(/usr/include)
 
 set(CPACK_GENERATOR DEB)
 
