@@ -54,7 +54,8 @@ void Saver::init()
         if (filename->empty()) {
             const auto now = std::chrono::system_clock::now();
             const std::time_t t_c = std::chrono::system_clock::to_time_t(now);
-            *filename = std::to_string(t_c) + suffix + ".log";
+            *filename = std::to_string(t_c) + "_" + to_string(rand()) + suffix + ".log";
+            int a = 0;
         }
     };
 

@@ -11,7 +11,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-pthread")
 
-#add_library(async async.h async.cpp main.cpp analyzer.h analyzer.cpp saver.h saver.cpp out.h printer.h printer.cpp)
 add_library(async SHARED async.h async.cpp analyzer.h analyzer.cpp saver.h saver.cpp out.h printer.h printer.cpp)
 
 if (MSVC)
@@ -28,14 +27,14 @@ set_target_properties(async PROPERTIES PUBLIC_HEADER "async.h")
 
 install(
     TARGETS async
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/async
+    LIBRARY DESTINATION /usr/lib
+    PUBLIC_HEADER DESTINATION /usr/include/async
 )
 
-add_executable(async_user main.cpp)
-target_link_libraries(async_user async)
-include_directories(/usr/include)
-install(TARGETS async_user RUNTIME DESTINATION bin)
+#add_executable(async_user main.cpp)
+#target_link_libraries(async_user async)
+#include_directories(/usr/include)
+#install(TARGETS async_user RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
