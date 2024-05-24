@@ -28,7 +28,14 @@ else ()
     )
 endif()
 
-install(TARGETS async RUNTIME DESTINATION bin)
+set_target_properties(async PROPERTIES PUBLIC_HEADER "async.h")
+
+install(
+    TARGETS async
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/async
+)
+install(TARGETS async_user RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
