@@ -7,6 +7,7 @@
 #include <atomic>
 #include <mutex>
 #include <queue>
+#include <memory>
 #include "out.h"
 
 class Saver: public Observer
