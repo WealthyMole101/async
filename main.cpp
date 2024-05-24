@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "version.h"
-#include <async.h>
+#include <async/async.h>
 
 int version() {
     return PROJECT_VERSION_PATCH;
