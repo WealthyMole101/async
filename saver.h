@@ -8,6 +8,7 @@
 #include <mutex>
 #include <queue>
 #include <memory>
+#include <condition_variable>
 #include "out.h"
 
 class Saver: public Observer
@@ -26,6 +27,10 @@ private:
     std::mutex m_mutex;
     std::atomic_bool m_is_running;
     std::queue<std::vector<std::string>> m_commands_queue;
+
+    std::condition_variable m_cv;
+    bool m_ready = false;
+    bool m_processed = false;
 };
 
 #endif // SAVER_H

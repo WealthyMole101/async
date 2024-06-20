@@ -8,8 +8,11 @@ using namespace std;
 Saver::Saver(): m_is_running(true)
 {
     auto handler = [&](string& filename){
+
                 while (m_is_running.load()) {
-                    const std::lock_guard<std::mutex> lock(m_mutex);
+                    // wait until main() sends data
+                    unique_lock lk(m_mutex);
+                    m_cv.wait(lk, [&]{ return m_ready; });
 
                     if (!m_commands_queue.empty()) {
                         auto blocks = m_commands_queue.front();
@@ -33,9 +36,15 @@ Saver::Saver(): m_is_running(true)
                         }
                     }
 
-                    this_thread::sleep_for(std::chrono::microseconds(100));
+                    m_processed = true;
+
+                    // manual unlocking is done before notifying, to avoid waking up
+                    // the waiting thread only to block again (see notify_one for details)
+                    lk.unlock();
+                    m_cv.notify_one();
                 }
             };
+
 
     m_thread_0 = shared_ptr<thread>(new thread(handler, std::ref(m_filename_0)));
     m_thread_1 = shared_ptr<thread>(new thread(handler, std::ref(m_filename_1)));
@@ -44,6 +53,15 @@ Saver::Saver(): m_is_running(true)
 Saver::~Saver()
 {
     m_is_running = false;
+
+    {
+        lock_guard lk(m_mutex);
+        m_processed = false;
+        m_ready = true;
+    }
+
+    m_cv.notify_one();
+
     m_thread_0.get()->join();
     m_thread_1.get()->join();
 }
@@ -55,7 +73,6 @@ void Saver::init()
             const auto now = std::chrono::system_clock::now();
             const std::time_t t_c = std::chrono::system_clock::to_time_t(now);
             *filename = std::to_string(t_c) + "_" + to_string(rand()) + suffix + ".log";
-            int a = 0;
         }
     };
 
@@ -65,6 +82,17 @@ void Saver::init()
 
 void Saver::out(vector<string>& blocks)
 {
-    const std::lock_guard<std::mutex> lock(m_mutex);
+    {
+        lock_guard lk(m_mutex);
+        m_processed = false;
+        m_ready = true;
+    }
+
     m_commands_queue.push(blocks);
+    m_cv.notify_one();
+
+    {
+        unique_lock lk(m_mutex);
+        m_cv.wait(lk, [&]{ return m_processed; });
+    }
 }
